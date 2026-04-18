@@ -9,6 +9,9 @@ from sklearn.cluster import KMeans
 from xgboost import XGBClassifier
 from sklearn.metrics import classification_report
 
+
+print("Loading Data...")
+      
 # 1. DATA LOADING & INITIAL CLEANING
 # Load column names from the external metadata file
 with open('census-bureau.columns', 'r') as f:
@@ -58,6 +61,8 @@ preprocessor = ColumnTransformer(
         ('cat', categorical_transformer, cat_features)
     ])
 
+print("Starting Classification training...")
+
 # 4. TASK 1: CLASSIFICATION (INCOME PREDICTION)
 # scale_pos_weight=3 balances the heavy majority of <50k earners
 clf_model = XGBClassifier(
@@ -95,6 +100,8 @@ X_seg_processed = preprocessor.fit_transform(df[num_features + cat_features])
 kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
 df['segment'] = kmeans.fit_predict(X_seg_processed)
 
+print("Starting Segmentation analysis...")
+      
 # 6. MARKETING ANALYTICS & PROFILING
 print("\n--- Task 2: Marketing Segment Profiles ---")
 profile = df.groupby('segment')[['age', 'capital gains', 'weeks worked in year']].mean()
